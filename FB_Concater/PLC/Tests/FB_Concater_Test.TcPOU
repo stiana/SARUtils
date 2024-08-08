@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Concater_Test" Id="{e97120b5-0232-48ef-80ac-2cd5674c63e5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Concater_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+	fbConcater : FB_Concater;
+	
+    stringResult : STRING;
+    myInt : INT := 123;
+    myReal : REAL := 45.67;
+    myLReal : LREAL := 12345.6789;
+    myBool : BOOL := TRUE;
+    myWord : WORD := 16#ABCD;
+    myString : STRING := 'example';
+    myDInt : DINT := -456;
+    myUDInt : UDINT := 789;
+    myLInt : LINT := -123456789;
+    myULInt : ULINT := 123456789;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TEST('TestClearMethod');
+    fbConcater.L('test');
+    fbConcater.Clear();
+    stringResult := fbConcater.GetString();
+	AssertEquals_STRING('', stringResult, 'Test of Clear method failed');
+TEST_FINISHED();
+
+TEST('TestGetStringMethod');
+	fbConcater.Clear().L('test');
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('test', stringResult, 'Test of GetString method failed');
+TEST_FINISHED();
+
+TEST('TestConcatStaticStrings');
+    fbConcater.Clear().L('my/').L('static/').L('strings');
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('my/static/strings', stringResult, 'Test with static strings failed');
+TEST_FINISHED();
+
+TEST('TestConcatInteger');
+    fbConcater.Clear().V(myInt).L('/').V(myDInt).L('/').V(myUDInt);
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('123/-456/789', stringResult, 'Test with integers failed');
+TEST_FINISHED();
+
+TEST('TestConcatReal');
+    fbConcater.Clear().V(myReal);
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('45.67', stringResult, 'Test with real number failed');
+TEST_FINISHED();
+
+TEST('TestConcatLReal');
+    fbConcater.Clear().V(myLReal);
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('12345.6789', stringResult, 'Test with LREAL failed');
+TEST_FINISHED();
+
+TEST('TestConcatBool');
+    fbConcater.Clear().V(myBool);
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('TRUE', stringResult, 'Test with boolean value TRUE failed');
+
+    fbConcater.Clear().L('FALSE');
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('FALSE', stringResult, 'Test with boolean value FALSE failed');
+TEST_FINISHED();
+
+TEST('TestConcatWord');
+    fbConcater.Clear().V(myWord);
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('43981', stringResult, 'Test with WORD failed'); // 16#ABCD = 43981
+TEST_FINISHED();
+
+TEST('TestConcatLIntAndULInt');
+    fbConcater.Clear().V(myLInt).L('/').V(myULInt);
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('-123456789/123456789', stringResult, 'Test with LINT and ULINT failed');
+TEST_FINISHED();
+
+TEST('TestMixedConcat');
+    fbConcater.Clear().V(myInt).L('/').V(myReal).L('/').V(myBool).L('/').V(myWord).L('/').V(myString);
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('123/45.67/TRUE/43981/example', stringResult, 'Test with mixed types failed');
+TEST_FINISHED();
+]]></ST>
+    </Implementation>
+    <Method Name="Tests" Id="{c2c92c7c-bd28-43fe-be46-baf66c4231fd}">
+      <Declaration><![CDATA[METHOD Tests : BOOL]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[(*
+
+TEST('TestClearMethod');
+    fbConcater.L('test');
+    fbConcater.Clear();
+    stringResult := fbConcater.GetString();
+	AssertEquals_STRING('', stringResult, 'Test of Clear method failed');
+TEST_FINISHED();
+
+TEST('TestGetStringMethod');
+	fbConcater.Clear().L('test');
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('test', stringResult, 'Test of GetString method failed');
+TEST_FINISHED();
+
+TEST('TestConcatStaticStrings');
+    fbConcater.Clear().L('my/').L('static/').L('strings');
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('my/static/strings', stringResult, 'Test with static strings failed');
+TEST_FINISHED();
+
+TEST('TestConcatInteger');
+    fbConcater.Clear().V(myInt).L('/').V(myDInt).L('/').V(myUDInt);
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('123/-456/789', stringResult, 'Test with integers failed');
+TEST_FINISHED();
+
+TEST('TestConcatReal');
+    fbConcater.Clear().V(myReal);
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('45.67', stringResult, 'Test with real number failed');
+TEST_FINISHED();
+
+TEST('TestConcatLReal');
+    fbConcater.Clear().V(myLReal);
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('12345.6789', stringResult, 'Test with LREAL failed');
+TEST_FINISHED();
+
+TEST('TestConcatBool');
+    fbConcater.Clear().V(myBool);
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('TRUE', stringResult, 'Test with boolean value TRUE failed');
+
+    fbConcater.Clear().L('FALSE');
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('FALSE', stringResult, 'Test with boolean value FALSE failed');
+TEST_FINISHED();
+
+TEST('TestConcatWord');
+    fbConcater.Clear().V(myWord);
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('43981', stringResult, 'Test with WORD failed'); // 16#ABCD = 43981
+TEST_FINISHED();
+
+TEST('TestConcatLIntAndULInt');
+    fbConcater.Clear().V(myLInt).L('/').V(myULInt);
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('-123456789/123456789', stringResult, 'Test with LINT and ULINT failed');
+TEST_FINISHED();
+
+TEST('TestMixedConcat');
+    fbConcater.Clear().V(myInt).L('/').V(myReal).L('/').V(myBool).L('/').V(myWord).L('/').V(myString);
+    stringResult := fbConcater.GetString();
+    AssertEquals_STRING('123/45.67/TRUE/43981/example', stringResult, 'Test with mixed types failed');
+TEST_FINISHED();
+
+*)]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

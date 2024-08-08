@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_Concater" Id="{9ca42f3e-4c63-43e8-b01f-4d34b6fee744}">
+    <Declaration><![CDATA[INTERFACE I_Concater
+]]></Declaration>
+    <Method Name="Clear" Id="{df0f2655-eaad-40bc-bc5c-606fedcf3e5b}">
+      <Declaration><![CDATA[METHOD PUBLIC Clear : I_Concater]]></Declaration>
+    </Method>
+    <Method Name="GetString" Id="{1989d606-e0f7-4373-b246-6aa0f6608f16}">
+      <Declaration><![CDATA[METHOD PUBLIC GetString : STRING]]></Declaration>
+    </Method>
+    <Method Name="L" Id="{68af6fe8-6055-493a-8622-a72f6266ea28}">
+      <Declaration><![CDATA[METHOD PUBLIC L : I_Concater
+VAR_INPUT
+    part : STRING;
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="V" Id="{c45fffae-2b88-4048-a002-c50ad539606c}">
+      <Declaration><![CDATA[METHOD PUBLIC V : I_Concater
+VAR_INPUT
+    part : ANY;
+END_VAR]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

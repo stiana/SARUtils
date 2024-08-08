@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="P_Concater_Tests" Id="{74815b05-7022-4e23-89b2-3e3601bcfff9}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM P_Concater_Tests
+VAR
+	fbConcater_Test : FB_Concater_Test;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TcUnit.RUN();]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Concater" Id="{88b60257-618f-4432-8726-364c087c5492}" SpecialFunc="None">
+    <Declaration><![CDATA[(*
+FUNCTION_BLOCK FB_Concater
+    VERSION : 1.0
+
+    This function block concatenates strings and variables of various types.
+    The concatenated result is stored in an internal buffer which can be retrieved
+    using the GetString method. The buffer can be cleared using the Clear method.
+
+    METHODS:
+        L(part : STRING) : FB_Concater
+            Adds a static string to the buffer.
+
+        V(part : ANY) : FB_Concater
+            Adds a variable of any type to the buffer after converting it to a string.
+
+        GetString() : STRING
+            Returns the concatenated string stored in the buffer.
+
+        Clear() : FB_Concater
+            Clears the buffer.
+
+    PRIVATE METHODS:
+        ConvertAnyToString(part : ANY, result : REFERENCE TO STRING) : HRESULT
+            Converts a variable of any type to a string.
+
+    EXAMPLE USAGE:
+        VAR
+            Concater : FB_Concater;
+            topic : STRING;
+            deviceId : STRING := 'device123';
+            sensorType : STRING := 'temperature';
+            valueType : STRING := 'reading';
+            sensorId : INT := 1;
+        END_VAR
+
+        // Building an MQTT topic dynamically
+        Concater.Clear().S('home/').V(deviceId).S('/').V(sensorType).S('/').V(sensorId).S('/').V(valueType);
+        topic := Concater.GetString();
+        // 'topic' will contain: "home/device123/temperature/1/reading"
+
+        // Another example with different values
+        Concater.Clear().S('building/').S('office/').V(deviceId).S('/').S('humidity/').V(sensorId).S('/').S('status');
+        topic := Concater.GetString();
+        // 'topic' will contain: "building/office/device123/humidity/1/status"
+*)
+FUNCTION_BLOCK FB_Concater IMPLEMENTS I_Concater
+VAR
+    _buffer : STRING;
+    hresult : HRESULT := S_OK;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Clear" Id="{164e1ec5-c8f2-4535-92ac-b756cccf9c5e}">
+      <Declaration><![CDATA[METHOD PUBLIC Clear : I_Concater
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_buffer := '';
+Clear := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ConvertAnyToString" Id="{db10737d-419e-4029-afcd-9ba2a142dd70}">
+      <Declaration><![CDATA[METHOD PRIVATE ConvertAnyToString : HRESULT
+VAR_INPUT
+    part : ANY;
+    result : REFERENCE TO STRING;
+END_VAR
+VAR
+    pInt : POINTER TO INT;
+    pReal : POINTER TO REAL;
+    pLReal : POINTER TO LREAL;
+    pBool : POINTER TO BOOL;
+    pWord : POINTER TO WORD;
+    pDWord : POINTER TO DWORD;
+    pByte : POINTER TO BYTE;
+    pSInt : POINTER TO SINT;
+    pUSInt : POINTER TO USINT;
+    pDInt : POINTER TO DINT;
+    pUDInt : POINTER TO UDINT;
+    pLInt : POINTER TO LINT;
+    pULInt : POINTER TO ULINT;
+	pString	: POINTER TO STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+CASE part.TypeClass OF
+	__SYSTEM.TYPE_CLASS.TYPE_INT:
+		pInt := part.pValue;
+		result := INT_TO_STRING(pInt^);
+	__SYSTEM.TYPE_CLASS.TYPE_REAL:
+		pReal := part.pValue;
+		result := REAL_TO_STRING(pReal^);
+	__SYSTEM.TYPE_CLASS.TYPE_LREAL:
+		pLReal := part.pValue;
+		result := LREAL_TO_STRING(pLReal^);
+	__SYSTEM.TYPE_CLASS.TYPE_BOOL:
+		pBool := part.pValue;
+		IF pBool^ THEN
+			result := 'TRUE';
+		ELSE
+			result := 'FALSE';
+		END_IF
+	__SYSTEM.TYPE_CLASS.TYPE_WORD:
+		pWord := part.pValue;
+		result := WORD_TO_STRING(pWord^);
+	__SYSTEM.TYPE_CLASS.TYPE_DWORD:
+		pDWord := part.pValue;
+		result := DWORD_TO_STRING(pDWord^);
+	__SYSTEM.TYPE_CLASS.TYPE_BYTE:
+		pByte := part.pValue;
+		result := BYTE_TO_STRING(pByte^);
+	__SYSTEM.TYPE_CLASS.TYPE_SINT:
+		pSInt := part.pValue;
+		result := SINT_TO_STRING(pSInt^);
+	__SYSTEM.TYPE_CLASS.TYPE_USINT:
+		pUSInt := part.pValue;
+		result := USINT_TO_STRING(pUSInt^);
+	__SYSTEM.TYPE_CLASS.TYPE_DINT:
+		pDInt := part.pValue;
+		result := DINT_TO_STRING(pDInt^);
+	__SYSTEM.TYPE_CLASS.TYPE_UDINT:
+		pUDInt := part.pValue;
+		result := UDINT_TO_STRING(pUDInt^);
+	__SYSTEM.TYPE_CLASS.TYPE_LINT:
+		pLInt := part.pValue;
+		result := LINT_TO_STRING(pLInt^);
+	__SYSTEM.TYPE_CLASS.TYPE_ULINT:
+		pULInt := part.pValue;
+		result := ULINT_TO_STRING(pULInt^);
+	__SYSTEM.TYPE_CLASS.TYPE_STRING:
+		pString := part.pValue;
+		result := pString^; 
+	ELSE
+		ConvertAnyToString := E_FAIL;
+		RETURN;
+END_CASE
+ConvertAnyToString := S_OK;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetString" Id="{728b80f7-1b61-4173-9eb7-5bab514d765a}">
+      <Declaration><![CDATA[METHOD PUBLIC GetString : STRING]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetString := _buffer;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="L" Id="{45b1dcea-b83d-450c-a489-914ab8a1baf3}">
+      <Declaration><![CDATA[METHOD PUBLIC L : I_Concater
+VAR_INPUT
+    part : STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[L := THIS^.V(part);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="V" Id="{f44bd250-c01b-460b-b284-7bd706afee2c}">
+      <Declaration><![CDATA[METHOD PUBLIC V : I_Concater
+VAR_INPUT
+    part : ANY;
+END_VAR
+VAR
+    strPart : STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[hresult := ConvertAnyToString(part, strPart);
+
+IF FAILED(hresult) THEN
+	_buffer := 'Error: Unsupported type';
+	V := THIS^;
+	RETURN;
+END_IF
+
+CONCAT2(ADR(_buffer), ADR(strPart), ADR(_buffer), SIZEOF(_buffer));
+V := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
