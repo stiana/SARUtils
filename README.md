@@ -1,41 +1,23 @@
 
-    This function block concatenates strings and variables of various types.
-    The concatenated result is stored in an internal buffer which can be retrieved
-    using the GetString method. The buffer can be cleared using the Clear method.
+SARUtils is the newest, greatest library of them all!
 
-    METHODS:
-        L(part : STRING) : FB_Concater
-            Adds a static string to the buffer.
+Download library from here:
+https://github.com/stiana/SARUtils/releases/tag/v0.1.2
 
-        V(part : ANY) : FB_Concater
-            Adds a variable of any type to the buffer after converting it to a string.
 
-        GetString() : STRING
-            Returns the concatenated string stored in the buffer.
+Usage example
 
-        Clear() : FB_Concater
-            Clears the buffer.
+VAR
+  fbConcater : FB_Concater;
+  stringResult : STRING;
 
-    PRIVATE METHODS:
-        ConvertAnyToString(part : ANY, result : REFERENCE TO STRING) : HRESULT
-            Converts a variable of any type to a string.
+  myInt : INT := 123;
+  myReal : REAL := 45.67;
+  myWord : WORD := 16#ABCD;
+  myString : STRING := 'example';
+  myBool : BOOL := TRUE;
+END_VAR
 
-    EXAMPLE USAGE:
-        VAR
-            Concater : FB_Concater;
-            topic : STRING;
-            deviceId : STRING := 'device123';
-            sensorType : STRING := 'temperature';
-            valueType : STRING := 'reading';
-            sensorId : INT := 1;
-        END_VAR
 
-        // Building an MQTT topic dynamically
-        Concater.Clear().S('home/').V(deviceId).S('/').V(sensorType).S('/').V(sensorId).S('/').V(valueType);
-        topic := Concater.GetString();
-        // 'topic' will contain: "home/device123/temperature/1/reading"
-
-        // Another example with different values
-        Concater.Clear().S('building/').S('office/').V(deviceId).S('/').S('humidity/').V(sensorId).S('/').S('status');
-        topic := Concater.GetString();
-        // 'topic' will contain: "building/office/device123/humidity/1/status"
+fbConcater.Clear().V(myInt).L('/').V(myReal).L('/').V(myBool).L('/').V(myWord).L('/').V(myString);
+stringResult := fbConcater.GetString(); // '123/45.67/TRUE/43981/example'
