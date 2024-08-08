@@ -6,7 +6,7 @@ https://github.com/stiana/SARUtils/releases/tag/v0.1.2
 
 
 Usage example
-
+```
 VAR
   fbConcater : FB_Concater;
   stringResult : STRING;
@@ -20,4 +20,6 @@ END_VAR
 
 
 fbConcater.Clear().V(myInt).L('/').V(myReal).L('/').V(myBool).L('/').V(myWord).L('/').V(myString);
-stringResult := fbConcater.GetString(); // '123/45.67/TRUE/43981/example'
+
+stringResult := fbConcater.GetString(); // Will result in the following string '123/45.67/TRUE/43981/example'
+```
