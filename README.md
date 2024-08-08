@@ -1,8 +1,15 @@
+# SARUtils - TwinCAT 3.1 library with an improved concat function.
 
-SARUtils is the newest, greatest library of them all!
 
 Download library from here:
+
 https://github.com/stiana/SARUtils/releases/tag/v0.1.2
+
+### Methods
+- Clear() - Empties the string
+- V() - Adds a variable of ANY type to the string
+- L() - Adds a literal to the string i.e. L('this is a literal')
+- GetString() - Returns the resulting string
 
 
 Usage example
